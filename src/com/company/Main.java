@@ -24,7 +24,126 @@ public class Main {
     public static void main(String[] args) {
 
 //        a1();
-        a2();
+//        a2();
+          a3();
+    }
+    
+        public static void a3(){
+        String[] pathArray = path.split(" ");
+        int distanz = 0;
+        int loop = 0;
+
+
+        //store x and y coordinates
+        ArrayList<Integer> xList = new ArrayList<>();
+        ArrayList<Integer> yList = new ArrayList<>();
+
+        //starting point in coordinate system
+        xList.add(x);
+        yList.add(y);
+
+
+
+        for(String s : pathArray) {
+
+            if (loop + 1 > pathArray.length) {
+                break;
+            }
+
+            String direction = pathArray[loop];                     // Splitten in char array
+            int counter = Integer.parseInt(pathArray[loop + 1]);   // Wiederholungen
+            char[] steps = direction.toCharArray();
+
+            while (counter > 0) {
+
+                for (char c : steps) {
+
+                    switch (c) {
+                        case 'F':
+                            switch (kompassAktuell){
+                                case 0:
+                                    coords[0] += 1;
+                                    //go north, change of y coordinate
+                                    y++;
+                                    break;
+                                case 1:
+                                    coords[1] += 1;
+                                    //go east, change of x coordinate
+                                    x++;
+                                    break;
+                                case 2:
+                                    coords[0] -= 1;
+                                    //go south, change of y coordinate, negative direction
+                                    y--;
+                                    break;
+                                case 3:
+                                    coords[1] -= 1;
+                                    //go west, change of x coordinate, negative direction
+                                    x--;
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            if(maxX < coords[0]) {
+                                maxX = coords[0];
+                            }
+                            if(maxY < coords[1]) {
+                                maxY = coords[1];
+                            }
+                            if(minX > coords[0]) {
+                                minX = coords[0];
+                            }
+                            if(minY > coords[1]) {
+                                minY = coords[1];
+                            }
+                            distanz++;
+                            break;
+                        case 'R':
+                            kompassRichtungAendern("R");
+                            xList.add(x);
+                            yList.add(y);
+
+
+                            break;
+                        case 'L':
+                            kompassRichtungAendern("L");
+
+                            xList.add(x);
+                            yList.add(y);
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                counter--;
+            }
+
+            loop += 2;
+        }
+
+        sumX = maxX + Math.abs(minX);
+        sumY = maxY + Math.abs(minY);
+
+        System.out.print(distanz + " ");
+        System.out.print(sumX * sumY + " ");
+        Integer[] xListnew = xList.toArray(new Integer[xList.size()]);
+        Integer[] yListnew = yList.toArray(new Integer[yList.size()]);
+        System.out.print(berechnePolygonFlaeche(xListnew, yListnew));
+
+    }
+
+    //stole this one from wikipedia
+    public static int berechnePolygonFlaeche(Integer[] x, Integer[] y) {
+        if ((x == null) || (y == null)) return 0;  // auf leere Argumente testen
+        int n = Math.min(x.length, y.length);        // Anzahl der Ecken des Polygons
+        if (n < 3) return 0;                       // ein Polygon hat mindestens drei Eckpunkte
+        double a = 0;                              // Variable fuer Flaeche des Polygons
+        for (int i = 0; i < n; i++) {                // Schleife zwecks Summenbildung
+            a += (y[i] + y[(i+1) % n]) * (x[i] - x[(i+1) % n]);
+        }
+        return (int) Math.abs(a / 2);                    // Flaecheninhalt zurueckliefern
     }
 
     public static void a2() {
